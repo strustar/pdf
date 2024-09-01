@@ -2,7 +2,7 @@ import streamlit as st
 import time, os
 import pdf_Fcn
 
-os.system('cls')  # 터미널 창 청소, clear screen
+# os.system('cls')  # 터미널 창 청소, clear screen
 total_start_time = time.time();  start_time = time.time()
 st.set_page_config(page_title = "PDF 자료 분석", page_icon = "✨", layout = "wide",    # centered, wide
                     initial_sidebar_state="expanded",
