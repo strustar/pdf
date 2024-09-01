@@ -20,7 +20,7 @@ with col[1]:
     keywords_condition = st.radio('#### :green[✨조건을 선택하세요]', ['and', 'or'], horizontal=True, index=0)
 
 st.sidebar.write('---')
-search_condition = st.sidebar.radio('#### :green[✨검색할 조건을 선택하세요]', ['폴더에서 검색', '파일들을 업로드해서 검색'], horizontal=True, index=0)
+search_condition = st.sidebar.radio('#### :green[✨검색할 조건을 선택하세요]', ['폴더에서 검색', '파일들을 업로드해서 검색'], horizontal=True, index=1)
 
 if '폴더' in search_condition:
     pdf_folders = pdf_Fcn.get_folders_with_pdfs('.')    
