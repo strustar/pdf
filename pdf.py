@@ -20,17 +20,17 @@ with col[1]:
     keywords_condition = st.radio('#### :green[✨조건을 선택하세요]', ['and', 'or'], horizontal=True, index=0)
 
 st.sidebar.write('---')
-search_condition = st.sidebar.radio('#### :green[✨검색할 조건을 선택하세요]', ['폴더에서 검색', '파일들을 업로드해서 검색'], horizontal=True, index=1)
+search_condition = st.sidebar.radio('#### :green[✨검색할 조건을 선택하세요]', ['폴더에서 검색', '파일들을 업로드해서 검색'], horizontal=True, index=0)
 
 if '폴더' in search_condition:
-    pdf_folders = pdf_Fcn.get_folders_with_pdfs('.')    
+    pdf_folders = pdf_Fcn.get_folders_with_pdfs('.')
 
     col = st.sidebar.columns([2, 1])
     with col[0]:
-        pdf_folder = st.selectbox("#### :blue[검색할 폴더를 선택하세요]", pdf_folders[1:], index=0)
+        pdf_folder = st.selectbox("#### :blue[검색할 폴더를 선택하세요]", pdf_folders[1:], index=2)
         pdf_list = os.listdir(pdf_folder)
     with col[1]:
-        st.write('');  st.write('');  st.write('')
+        st.write('');  st.write('')
         st.write(f'#### 파일 개수 : {len(pdf_list)}개')
     with st.sidebar.expander('#### :blue[파일 목록을 보시려면 클릭하세요]'):
         st.write(pdf_list)
@@ -43,12 +43,29 @@ if '폴더' in search_condition:
 
         pdf_path = os.path.join(pdf_folder, pdf_name)
         pdf_Fcn.main(pdf_path, keywords, keywords_condition)
-else:
+else:  # 업로드 파일
     uploaded_files = st.sidebar.file_uploader("#### :blue[PDF 파일들을 끌어 놓으세요]", type=["pdf"], accept_multiple_files=True)
-    for uploaded_file in uploaded_files:
-        pdf_Fcn.main(uploaded_file, keywords, keywords_condition)
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            pdf_Fcn.main(uploaded_file, keywords, keywords_condition)
+    else:
+        st.write('#### :blue[왼쪽 사이드바에서 검색할 PDF 파일들을 끌어 놓으세요]')
 
-
+# Metric 스타일
+st.markdown("""
+    <style>
+    [data-testid="stMetricLabel"] {
+        font-size: 20px !important;
+        color: green !important;
+        font-weight: bold !important;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 24px;
+        color: orange;
+        # font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 st.sidebar.write('---')
 st.sidebar.write(f"#### :orange[총 검색 시간 : {time.time() - start_time:.2f} 초]")

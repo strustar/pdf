@@ -139,18 +139,3 @@ def style(df, keywords):
         height = 2000
     st.components.v1.html(html_table, width=2100, height=height, scrolling=True)
 
-    # Metric 스타일
-    st.markdown("""
-        <style>
-        [data-testid="stMetricLabel"] {
-            font-size: 20px !important;
-            color: green !important;
-            font-weight: bold !important;
-        }
-        [data-testid="stMetricValue"] {
-            font-size: 24px;
-            color: orange;
-            # font-weight: bold;
-        }
-        </style>
-        """, unsafe_allow_html=True)

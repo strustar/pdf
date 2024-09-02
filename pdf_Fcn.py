@@ -16,16 +16,15 @@ def get_folders_with_pdfs(path='.'):  # 현재 디렉토리
     
     return folders_with_pdfs
 
-def main(pdf_path, keywords, condition):
-    if keywords:
+def main(pdf_path, keywords, condition):    
+    if keywords:        
         if hasattr(pdf_path, 'seek'):
             pdf_path.seek(0)
                     
         if isinstance(pdf_path, str):  # 로컬 파일 경로    
             doc = fitz.open(pdf_path)    
             file_size = os.path.getsize(pdf_path)
-            pdf_name = os.path.basename(pdf_path)
-            
+            pdf_name = os.path.basename(pdf_path)            
         else:  # UploadedFile 객체
             doc = fitz.open(stream=pdf_path.read(), filetype="pdf")
             file_size = pdf_path.size            
@@ -42,24 +41,24 @@ def main(pdf_path, keywords, condition):
                 n_per_page.append(len(line_text))
                 found_pages.append(page_num + 1)                
                 img = highlight_page(pdf_path, page_num + 1, keywords, condition)
-                imgs.append(img)        
-                
-        if n_per_page:
-            st.write(f"### 📚 PDF 정보 : :blue[[{pdf_name}]]")
-            condition = ' : 모두 포함된 문장' if condition == 'and' else ' : 하나라도 포함된 문장'
-            if len(keywords) == 1:
-                condition = ''                
-            
-            col = st.columns([1,1,1,2])
-            with col[0]:
-                st.metric(label="페이지 수", value=f"{len(doc):,.0f} 쪽")
-            with col[1]:
-                st.metric(label="파일 크기", value=f'{file_size/1024/1024:,.1f} MB')
-            with col[2]:
-                st.metric(label="검색 개수", value=f'{sum(n_per_page):,.0f}개 찾음')
-            with col[3]:
-                st.metric(label="검색어", value=f'{keywords} {condition}')
+                imgs.append(img)
 
+        st.write(f"### 📚 PDF 정보 : :green[[{pdf_name}]]")
+        condition = ' : 모두 포함된 문장' if condition == 'and' else ' : 하나라도 포함된 문장'
+        if len(keywords) == 1:
+            condition = ''                
+        
+        col = st.columns([1,1,1,2])
+        with col[0]:
+            st.metric(label="페이지 수", value=f"{len(doc):,.0f} 쪽")
+        with col[1]:
+            st.metric(label="파일 크기", value=f'{file_size/1024/1024:,.1f} MB')
+        with col[2]:
+            st.metric(label="검색 개수", value=f'{sum(n_per_page):,.0f}개 찾음')
+        with col[3]:
+            st.metric(label="검색어", value=f'{keywords} {condition}')
+
+        if n_per_page:
             df = pd.DataFrame()
             pages = [];  img = []
             for i in range(len(found_pages)):
@@ -75,9 +74,11 @@ def main(pdf_path, keywords, condition):
             df['찾은 내용'] = found_texts
             df['원본 페이지'] = img            
             pdf_style.style(df, keywords)
-            st.write('---')
+        else:
+            st.write('#### :blue[검색된 내용이 없습니다.]')
 
         doc.close()
+        st.write('---')
 
 def keyword_line(page, keywords, condition):
     keywords = [k.lower() for k in keywords]
