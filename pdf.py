@@ -48,7 +48,7 @@ elif '업로드' in search_condition:  # 업로드 파일
     if uploaded_files:
         for uploaded_file in uploaded_files:
             pdf_Fcn.main(uploaded_file, keywords, keywords_condition)
-    if uploaded_files == []:
+    if uploaded_files == None:
         uploaded_files = '제1권 도로계획 및 구조.pdf'
         pdf_Fcn.main(uploaded_files, keywords, keywords_condition)
     uploaded_files
