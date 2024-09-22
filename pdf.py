@@ -45,12 +45,12 @@ if '폴더' in search_condition:
         pdf_Fcn.main(pdf_path, keywords, keywords_condition)
 elif '업로드' in search_condition:  # 업로드 파일
     uploaded_files = st.sidebar.file_uploader("#### :blue[PDF 파일들을 끌어 놓으세요]", type=["pdf"], accept_multiple_files=True)    
-    if uploaded_files:
-        for uploaded_file in uploaded_files:
-            pdf_Fcn.main(uploaded_file, keywords, keywords_condition)
     if uploaded_files == None:
         uploaded_files = '제1권 도로계획 및 구조.pdf'
         pdf_Fcn.main(uploaded_files, keywords, keywords_condition)
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            pdf_Fcn.main(uploaded_file, keywords, keywords_condition)
     uploaded_files
 else:  # 구글 드라이브에서 검색
     gdrive_url = st.sidebar.text_input("#### :blue[구글 드라이브 파일 URL을 입력하세요]", "https://drive.google.com/file/d/1BrWtUEHPNzupNnfyTv9sUHryBbkpXEsn/view?usp=sharing")
