@@ -2,3 +2,4 @@ streamlit==1.38.0
 pillow==10.4.0
 PyMuPDF==1.24.9
 pandas==2.2.2
+gdown==5.2.0
