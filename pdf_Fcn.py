@@ -22,12 +22,12 @@ def main(pdf_path, keywords, condition):
             pdf_path.seek(0)
                     
         if isinstance(pdf_path, str):  # 로컬 파일 경로    
-            doc = fitz.open(pdf_path)    
+            doc = fitz.open(pdf_path)
             file_size = os.path.getsize(pdf_path)
             pdf_name = os.path.basename(pdf_path)            
         else:  # UploadedFile 객체
             doc = fitz.open(stream=pdf_path.read(), filetype="pdf")
-            file_size = pdf_path.size            
+            file_size = pdf_path.size
             pdf_name = pdf_path.name
 
         found_pages = [];  found_texts = [];  n_per_page = [];  imgs = []

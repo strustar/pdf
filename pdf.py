@@ -1,5 +1,5 @@
 import streamlit as st
-import time, os
+import time, os, gdown, tempfile
 import pdf_Fcn
 
 # os.system('cls')  # 터미널 창 청소, clear screen
@@ -15,12 +15,12 @@ st.set_page_config(page_title = "PDF 자료 분석", page_icon = "✨", layout =
 
 col = st.sidebar.columns(2)
 with col[0]:
-    keywords = st.text_input("#### :green[✨ 키워드 입력] (공백으로 구분)", "신축 이음").split()    
+    keywords = st.text_input("#### :green[✨ 키워드 입력] (공백으로 구분)", "하이 패스").split()    
 with col[1]:
     keywords_condition = st.radio('#### :green[✨조건을 선택하세요]', ['and', 'or'], horizontal=True, index=0)
 
 st.sidebar.write('---')
-search_condition = st.sidebar.radio('#### :green[✨검색할 조건을 선택하세요]', ['폴더에서 검색', '파일들을 업로드해서 검색'], horizontal=True, index=0)
+search_condition = st.sidebar.radio('#### :green[✨검색할 조건을 선택하세요]', ['폴더에서 검색', '파일들을 업로드해서 검색', '구글 드라이브에서 검색'], horizontal=True, index=1)
 
 if '폴더' in search_condition:
     pdf_folders = pdf_Fcn.get_folders_with_pdfs('.')
@@ -43,13 +43,38 @@ if '폴더' in search_condition:
 
         pdf_path = os.path.join(pdf_folder, pdf_name)
         pdf_Fcn.main(pdf_path, keywords, keywords_condition)
-else:  # 업로드 파일
-    uploaded_files = st.sidebar.file_uploader("#### :blue[PDF 파일들을 끌어 놓으세요]", type=["pdf"], accept_multiple_files=True)
+elif '업로드' in search_condition:  # 업로드 파일
+    uploaded_files = st.sidebar.file_uploader("#### :blue[PDF 파일들을 끌어 놓으세요]", type=["pdf"], accept_multiple_files=True)    
     if uploaded_files:
         for uploaded_file in uploaded_files:
             pdf_Fcn.main(uploaded_file, keywords, keywords_condition)
+    if uploaded_files == []:
+        uploaded_files = '제1권 도로계획 및 구조.pdf'
+        pdf_Fcn.main(uploaded_files, keywords, keywords_condition)
+    uploaded_files
+else:  # 구글 드라이브에서 검색
+    gdrive_url = st.sidebar.text_input("#### :blue[구글 드라이브 파일 URL을 입력하세요]", "https://drive.google.com/file/d/1BrWtUEHPNzupNnfyTv9sUHryBbkpXEsn/view?usp=sharing")
+    
+    if gdrive_url:
+        if 'gdrive_file' not in st.session_state:
+            with st.spinner('구글 드라이브에서 파일 다운로드 중...'):
+                file_id = gdrive_url.split('/')[-2]
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
+                    output = '도로설계요령(2020) 제3권 교량.pdf' #tmp_file.name
+                    gdown.download(f'https://drive.google.com/uc?id={file_id}', output, quiet=False)
+                st.session_state.gdrive_file = output
+        else:
+            output = st.session_state.gdrive_file
+        
+        # st.success('파일 다운로드 완료!')
+        try:
+            pdf_Fcn.main(output, keywords, keywords_condition)
+        finally:
+            # 파일 처리 후 항상 삭제
+            pass
+            # os.remove(output)
     else:
-        st.write('#### :blue[왼쪽 사이드바에서 검색할 PDF 파일들을 끌어 놓으세요]')
+        st.write('#### :blue[구글 드라이브 파일 URL을 입력하세요]')
 
 # Metric 스타일
 st.markdown("""
